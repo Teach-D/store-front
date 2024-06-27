@@ -61,6 +61,41 @@ const ProductList = ({
     loadImages();
   }, [products]);
 
+  const AddCartItem = async (event) => {
+    event.preventDefault();
+    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
+
+    if (!loginInfo || !loginInfo.accessToken) {
+      console.error("Access token not found");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/cartItems",
+        {
+          title,
+          price,
+          description,
+          categoryId,
+          imageUrl,
+          quantity,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${loginInfo.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const emptyCardCount = 4 - (products.length % 4);
 
   return (
@@ -79,6 +114,13 @@ const ProductList = ({
           </Grid>
         ))}
       </Grid>
+
+      <Link href={`/addProducts`} passHref>
+            <Button>상품추가</Button>
+          </Link>
+          <Link href={`/addCategory`} passHref>
+            <Button>카테고리추가</Button>
+          </Link>
 
       <Grid container spacing={3} className={classes.gridContainer}>
         {products.length > 0 ? (
@@ -100,11 +142,17 @@ const ProductList = ({
                     {product.price}원
                   </Typography>
                 </CardContent>
-                <CardActions>
-                  <Button variant="contained" color="primary" fullWidth>
-                    장바구니 담기
-                  </Button>
-                </CardActions>
+                <Box component="form" className={classes.form} onSubmit={AddCartItem}>
+                <Button
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  size="large"
+                  fullWidth
+                >
+                  Add Product
+                </Button>
+                </Box>
               </Card>
             </Grid>
           ))
