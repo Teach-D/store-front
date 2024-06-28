@@ -113,27 +113,6 @@ const JoinForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <TextField
-          label="생년월일"
-          type="date"
-          variant="outlined"
-          margin="normal"
-          fullWidth
-          InputLabelProps={{
-            shrink: true,
-          }}
-          required
-          value={birthDate}
-          onChange={(e) => setBirthDate(e.target.value)}
-        />
-
-        <FormControl fullWidth variant="outlined" margin="normal" required>
-          <InputLabel>성별</InputLabel>
-          <Select value={gender} onChange={handleChange} label="성별">
-            <MenuItem value="M">남성</MenuItem>
-            <MenuItem value="F">여성</MenuItem>
-          </Select>
-        </FormControl>
         <Button
           type="submit"
           variant="contained"

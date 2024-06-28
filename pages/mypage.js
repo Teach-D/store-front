@@ -50,13 +50,7 @@ const MyPage = () => {
       <Box sx={{ textAlign: "center" }}>
         <Typography variant="h5">이름: {userInfo.name}</Typography>
         <Typography variant="h5">이메일: {userInfo.email}</Typography>
-        <Typography variant="h5">
-          생년월일: {userInfo.birthYear}년 {userInfo.birthMonth}월{" "}
-          {userInfo.birthDay}일
-        </Typography>
-        <Typography variant="h5">
-          성별: {userInfo.gender === "M" ? "남자" : "여자"}
-        </Typography>
+
       </Box>
     </Container>
   );

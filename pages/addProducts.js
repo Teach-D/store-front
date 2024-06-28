@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Container, Box, Typography, TextField, Button } from "@mui/material";
+import React, { useState, useEffect } from "react";
+import { Container, Box, Typography, TextField, Button, MenuItem } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import Link from "next/link";
 import axios from "axios";
@@ -33,9 +33,23 @@ const AddProducts = () => {
   const [title, setTitle] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const [categoryId, setCategoryId] = useState("");
+  const [categoryName, setCategoryName] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:8080/categories");
+        setCategories(response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const handleAddProduct = async (event) => {
     event.preventDefault();
@@ -46,6 +60,13 @@ const AddProducts = () => {
       return;
     }
 
+    const selectedCategory = categories.find(cat => cat.name === categoryName);
+
+    if (!selectedCategory) {
+      console.error("Selected category not found");
+      return;
+    }
+
     try {
       const response = await axios.post(
         "http://localhost:8080/products",
@@ -53,7 +74,7 @@ const AddProducts = () => {
           title,
           price,
           description,
-          categoryId,
+          categoryId: selectedCategory.id,
           imageUrl,
           quantity,
         },
@@ -103,13 +124,20 @@ const AddProducts = () => {
           onChange={(e) => setDescription(e.target.value)}
         />
         <TextField
-          label="categoryId"
+          select
+          label="Category"
           variant="outlined"
           margin="normal"
           fullWidth
-          value={categoryId}
-          onChange={(e) => setCategoryId(e.target.value)}
-        />
+          value={categoryName}
+          onChange={(e) => setCategoryName(e.target.value)}
+        >
+          {categories.map((category) => (
+            <MenuItem key={category.id} value={category.name}>
+              {category.name}
+            </MenuItem>
+          ))}
+        </TextField>
         <TextField
           label="Image URL"
           variant="outlined"

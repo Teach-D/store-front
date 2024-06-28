@@ -13,6 +13,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import Link from "next/link"; // 추가된 코드
 import myAxios from "../utils/myaxios";
+import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -61,25 +62,53 @@ const ProductList = ({
     loadImages();
   }, [products]);
 
-  const AddCartItem = async (event) => {
-    event.preventDefault();
+  const [cartId, setCartId] = useState("");
+  const [quantity, setQuantity] = useState("1");
+
+  const handleQuantityChange = (quantity) => {
+    setQuantity(quantity)
+  }
+  
+
+
+  const getCart = async () => {
+
     const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
 
-    if (!loginInfo || !loginInfo.accessToken) {
-      console.error("Access token not found");
-      return;
+    try {
+      const response = await axios.get(
+        "http://localhost:8080/carts",
+        {
+          headers: {
+            Authorization: `Bearer ${loginInfo.accessToken}`,
+          },
+        }
+      );
+      console.log(response.data.id)
+      setCartId(response.data.id)
+      if (response.status === 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
     }
+  };
+
+  useEffect(() => {
+    getCart();
+  });
+
+
+  const handleAddToCart = async (productId) => {
+    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
 
     try {
       const response = await axios.post(
-        "http://localhost:8080/cartItems",
+        `http://localhost:8080/cartItems/${productId}`,
         {
-          title,
-          price,
-          description,
-          categoryId,
-          imageUrl,
-          quantity,
+          cartId : cartId,
+          quantity: quantity,
         },
         {
           headers: {
@@ -87,14 +116,18 @@ const ProductList = ({
           },
         }
       );
-
-      if (response.status === 200) {
-        router.push("/");
+      if (response.status === 201) {
+        alert("Product added to cart successfully!");
       }
     } catch (error) {
       console.error(error);
+      alert("Failed to add product to cart.");
     }
   };
+
+  const goProduct = () => {
+    console.log("aa")
+  }
 
   const emptyCardCount = 4 - (products.length % 4);
 
@@ -142,17 +175,13 @@ const ProductList = ({
                     {product.price}원
                   </Typography>
                 </CardContent>
-                <Box component="form" className={classes.form} onSubmit={AddCartItem}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  fullWidth
-                >
-                  Add Product
-                </Button>
-                </Box>
+                <Link href={`/editProduct/${product.id}`} passHref>
+                  <Button>수정</Button>
+                </Link>
+                <Link href={`/product/${product.id}`} passHref>
+                  <Button>자세히 보기</Button>
+                </Link>
+      
               </Card>
             </Grid>
           ))
