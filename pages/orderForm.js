@@ -21,6 +21,7 @@ const MyPage = () => {
 
   const [userInfo, setUserInfo] = useState(null);
   const [deliveryInfo, setDeliveryInfo] = useState("")
+  const [cartItems, setCartItems] = useState("")
 
   useEffect(() => {
     const fetchUserInfo = async () => {
@@ -52,8 +53,21 @@ const MyPage = () => {
         });
 
         setDeliveryInfo(response.data);
+      } catch (error) {
+        console.error(error);
+        window.location.href = "/login";
+      }
+
+      try {
+        const response = await axios.get("http://localhost:8080/cartItems", {
+          headers: {
+            Authorization: `Bearer ${loginInfo.accessToken}`,
+          },
+        });
+
+        setCartItems(response.data);
         console.log(response.data)
-        console.log(deliveryInfo)
+
       } catch (error) {
         console.error(error);
         window.location.href = "/login";
@@ -63,38 +77,36 @@ const MyPage = () => {
     fetchUserInfo();
   }, []);
 
-  if (!userInfo) {
-    return <div>Loading...</div>;
-  }
-
-  const handleDeleteProduct = async () => {
-
+  const AddOrder = async () => {
     const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
 
     if (!loginInfo || !loginInfo.accessToken) {
       console.error("Access token not found");
-
       return;
     }
 
     try {
-      const response = await axios.delete(
-        `http://localhost:8080/delivery`,
+      const response = await axios.post(
+        "http://localhost:8080/orders",
+        {},
         {
           headers: {
             Authorization: `Bearer ${loginInfo.accessToken}`,
           },
         }
       );
-
+      console.log(response)
       if (response.status === 200) {
         router.push("/");
       }
     } catch (error) {
       console.error(error);
-    } finally {
     }
   };
+
+  if (!userInfo) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Container
@@ -106,29 +118,61 @@ const MyPage = () => {
         minHeight: "100vh",
       }}
     >
-      <h1>MyPage</h1>
-      <p>MyPage 페이지입니다.</p>
+      <h1>주문하기</h1>
       <Box sx={{ textAlign: "center" }}>
+         <h2>주문자 정보</h2>
         <Typography variant="h5">이름: {userInfo.name}</Typography>
         <Typography variant="h5">이메일: {userInfo.email}</Typography>
       </Box>
 
-      <h2>배송정보</h2>
       <Box sx={{ textAlign: "center" }}>
+          <h2>배송정보</h2>
         <Typography variant="h5">받으시는 분: {deliveryInfo.recipient}</Typography>
         <Typography variant="h5">주소: {deliveryInfo.address}</Typography>
         <Typography variant="h5">전화번호: {deliveryInfo.phoneNumber}</Typography>
         <Typography variant="h5">요청사항: {deliveryInfo.request}</Typography>
       </Box>
 
-      <Link href={`/addDelivery`} passHref>
-        <Button>배송정보 저장</Button>
-      </Link>
-      <Link href={`/editDelivery`} passHref>
-        <Button>배송정보 수정</Button>
-      </Link>
-      <button  onClick={() => handleDeleteProduct()} >
-          삭제
+      {cartItems.length > 0 ? (
+          cartItems.map((item, index) => (
+            <Grid item xs={12} sm={12} md={4} lg={4} key={index}>
+              <Card>
+                <CardMedia
+                  
+                />
+                <CardContent>
+                  <Typography gutterBottom variant="h5" component="div">
+                    {item.product.title}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {item.quantity}개
+                  </Typography>
+                </CardContent>
+              </Card>
+              
+            </Grid>
+          ))
+        ) : (
+          <Grid
+            item
+            xs={12}
+            style={{
+              textAlign: "center",
+              height: "500px",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Typography variant="h4" component="div">
+              장바구니가 비어 있습니다.
+            </Typography>
+          </Grid>
+        )}
+
+     
+      <button  onClick={() => AddOrder()} >
+          주문하기
         </button>
     </Container>
   );

@@ -117,6 +117,12 @@ const Cart = () => {
           쇼핑 계속하기
         </Button>
       </Link>
+
+      <Link href={`/orderForm`} passHref>
+        <Button variant="contained" color="primary" style={{ marginTop: "16px" }}>
+          주문하기
+        </Button>
+      </Link>
     </Container>
   );
 };

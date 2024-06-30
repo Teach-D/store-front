@@ -63,12 +63,6 @@
     width: 100%;
   }
   
-  button {
-    padding: 10px 20px;
-    margin: 10px 0;
-    font-size: 1em;
-    cursor: pointer;
-  }
   
   .updateButton {
     background-color: #4caf50;

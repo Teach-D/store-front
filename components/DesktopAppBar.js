@@ -83,6 +83,15 @@ const DesktopAppBar = () => {
           </Button>
         </Link>
 
+        <Link href="/orders" passHref>
+          <Button
+            color="inherit"
+            style={{ display: isLoggedIn ? "block" : "none" }}
+          >
+            주문목록
+          </Button>
+        </Link>
+
         <Button
           color="inherit"
           style={{ display: isLoggedIn ? "block" : "none" }}

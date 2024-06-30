@@ -148,7 +148,7 @@ const ProductList = ({
         ))}
       </Grid>
 
-      <Link href={`/addProducts`} passHref>
+          <Link href={`/addProducts`} passHref>
             <Button>상품추가</Button>
           </Link>
           <Link href={`/addCategory`} passHref>
