@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+
 import {
   Container,
   Grid,
@@ -13,6 +15,7 @@ import {
 import { makeStyles } from "@mui/styles";
 import Link from "next/link"; // 추가된 코드
 import axios from "axios";
+import { Rotate90DegreesCcw } from "@mui/icons-material";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -32,6 +35,7 @@ const useStyles = makeStyles((theme) => ({
 
 const OrderList = () => {
   const classes = useStyles();
+  const router = useRouter();
 
   const [orders, setOrders] = useState([]);
 
@@ -79,6 +83,8 @@ const OrderList = () => {
       }
     } catch (error) {
       console.error(error);
+      
+
     } finally {
     }
   };
@@ -113,6 +119,10 @@ const OrderList = () => {
                       </Box>
                     ))}
                   </div>
+                  <div>총 결제 금액{order.totalPrice}</div>
+                  <button onClick={() => deleteOrder(order.id)}>
+                    주문취소 {order.id}
+                  </button>
                 </CardContent>
               </Card>
             </Grid>

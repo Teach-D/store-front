@@ -92,6 +92,15 @@ const DesktopAppBar = () => {
           </Button>
         </Link>
 
+        <Link href="/discount" passHref>
+          <Button
+            color="inherit"
+            style={{ display: isLoggedIn ? "block" : "none" }}
+          >
+            할인쿠폰
+          </Button>
+        </Link>
+
         <Button
           color="inherit"
           style={{ display: isLoggedIn ? "block" : "none" }}
