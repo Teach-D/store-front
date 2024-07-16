@@ -107,10 +107,20 @@ const OrderList = () => {
                     {order.products.map((productEntry, index) => (
                       <Box key={index} mt={2}>
                         <Typography variant="body2" color="text.secondary">
-                          제목: {productEntry.product.title}
+                          {productEntry.product? (
+                            `제목: ${productEntry.product.title}`
+                          ) : (
+                            `: ${productEntry.productTitle}` // Fallback text when title is null
+                          )}
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
-                          가격: {productEntry.product.price}
+                          <Typography variant="body2" color="text.secondary">
+                          {productEntry.product ? (
+                            `가격: ${productEntry.product.price}`
+                          ) : (
+                            `: ${productEntry.productPrice}` // Fallback text when title is null
+                          )}
+                        </Typography>
                         </Typography>
                         <Typography variant="body2" color="text.secondary">
                           주문 수량: {productEntry.quantity}

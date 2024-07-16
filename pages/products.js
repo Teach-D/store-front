@@ -77,7 +77,7 @@ const ProductList = ({
 
     try {
       const response = await axios.get(
-        "http://localhost:8080/carts",
+        "http://localhost:8080/products",
         {
           headers: {
             Authorization: `Bearer ${loginInfo.accessToken}`,
