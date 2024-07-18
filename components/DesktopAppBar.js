@@ -2,6 +2,7 @@ import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+ 
 import {
   Dialog,
   DialogActions,
@@ -53,6 +54,11 @@ const DesktopAppBar = () => {
           </Typography>
         </Link>
         <div style={{ flexGrow: 1 }} />
+
+        <Link href="/chat" passHref>
+          <Button color="inherit">채팅</Button>
+        </Link>
+
         <Link href="/products" passHref>
           <Button color="inherit">상품목록</Button>
         </Link>
