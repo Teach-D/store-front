@@ -42,7 +42,7 @@ const AddProducts = () => {
     const fetchCategories = async () => {
       try {
         const response = await axios.get("http://localhost:8080/categories");
-        setCategories(response.data);
+        setCategories(response.data.result);
       } catch (error) {
         console.error("Error fetching categories:", error);
       }

@@ -21,9 +21,12 @@ const EditProduct = () => {
   useEffect(() => {
     if (id) {
       const fetchProduct = async () => {
+        console.log('aas')
+
         try {
           const response = await axios.get(`http://localhost:8080/products/${id}`);
-          const product = response.data.product;
+          console.log(response.data.result)
+          const product = response.data.result.product;
           setTitle(product.title);
           setPrice(product.price);
           setDescription(product.description);
@@ -31,7 +34,7 @@ const EditProduct = () => {
           setImageUrl(product.imageUrl);
 
           const responseCategory = await axios.get(`http://localhost:8080/categories/${product.category.id}`);
-          setCategoryName(responseCategory.data.name);
+          setCategoryName(responseCategory.data.result.name);
         } catch (error) {
           console.error(error);
           setError("Failed to fetch product data.");
@@ -130,7 +133,8 @@ const EditProduct = () => {
           },
         }
       );
-      setCartId(response.data.id);
+      console.log(response.data.result)
+      setCartId(response.data.result.id);
     } catch (error) {
       console.error(error);
     }
@@ -142,6 +146,11 @@ const EditProduct = () => {
 
   const handleAddToCart = async (productId) => {
     const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
+
+    console.log("asas")
+    console.log(cartId)
+    console.log(quantity)
+
     try {
       const response = await axios.post(
         `http://localhost:8080/cartItems/${productId}`,

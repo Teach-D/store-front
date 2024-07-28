@@ -44,7 +44,7 @@ const Cart = () => {
         },
       });
       console.log(response.data)
-      setCartItems(response.data)
+      setCartItems(response.data.result)
     } catch (error) {
       console.error(error);
     }
@@ -53,6 +53,36 @@ const Cart = () => {
   useEffect(() => {
     getCart();
   }, []);
+
+
+  const removeFromCart = async (id) => {
+
+    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
+
+    if (!loginInfo || !loginInfo.accessToken) {
+      console.error("Access token not found");
+
+      return;
+    }
+
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/cartItems/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${loginInfo.accessToken}`,
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error(error);
+    } finally {
+    }
+  };
 
   return (
     <Container className={classes.container}>
@@ -84,7 +114,7 @@ const Cart = () => {
                   variant="contained"
                   color="secondary"
                   fullWidth
-                  onClick={() => removeFromCart(item.product.id)}
+                  onClick={() => removeFromCart(item.id)}
                   style={{ marginTop: "16px" }}
                 >
                   제거

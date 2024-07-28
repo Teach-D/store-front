@@ -45,7 +45,8 @@ const Login = () => {
       });
 
       if (response.status === 200) {
-        const loginInfo = response.data;
+        console.log(response.data);
+        const loginInfo = response.data.result;
         localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
         router.push("/");
 

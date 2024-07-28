@@ -42,7 +42,7 @@ const MyPage = () => {
           },
         });
 
-        setUserInfo(response.data);
+        setUserInfo(response.data.result);
       } catch (error) {
         console.error(error);
         window.location.href = "/login";
@@ -54,8 +54,8 @@ const MyPage = () => {
             Authorization: `Bearer ${loginInfo.accessToken}`,
           },
         });
-
-        setDeliveryInfo(response.data);
+        console.log(response)
+        setDeliveryInfo(response.data.result);
       } catch (error) {
         console.error(error);
         window.location.href = "/login";
@@ -68,8 +68,7 @@ const MyPage = () => {
           },
         });
 
-        setCartItems(response.data);
-        console.log(response.data);
+        setCartItems(response.data.result);
       } catch (error) {
         console.error(error);
         window.location.href = "/login";
@@ -82,7 +81,7 @@ const MyPage = () => {
           },
         });
 
-        setDiscounts(response.data);
+        setDiscounts(response.data.result);
       } catch (error) {
         console.error(error);
       }

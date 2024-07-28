@@ -41,7 +41,7 @@ function MyApp({ Component, pageProps }) {
             }
           );
 
-          const loginInfo = response.data;
+          const loginInfo = response.data.result;
           localStorage.setItem("loginInfo", JSON.stringify(loginInfo));
         } catch (error) {
           console.error(error);

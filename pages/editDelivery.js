@@ -51,10 +51,10 @@ const EditDelivery = () => {
         });
 
         if (isMounted) { // Check if component is still mounted
-          setRecipient(response.data.recipient);
-          setAddress(response.data.address);
-          setPhoneNumber(response.data.phoneNumber);
-          setRequest(response.data.request);
+          setRecipient(response.data.result.recipient);
+          setAddress(response.data.result.address);
+          setPhoneNumber(response.data.result.phoneNumber);
+          setRequest(response.data.result.request);
         }
       } catch (error) {
         console.error(error);

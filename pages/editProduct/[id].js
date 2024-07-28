@@ -44,7 +44,7 @@ const EditProduct = () => {
       const fetchProduct = async () => {
         try {
           const response = await axios.get(`http://localhost:8080/products/${id}`);
-          const product = response.data.product;
+          const product = response.data.result.product;
           setTitle(product.title);
           setPrice(product.price);
           setDescription(product.description);

@@ -50,7 +50,7 @@ const OrderList = () => {
       });
       console.log(response)
 
-      setDiscounts(response.data);
+      setDiscounts(response.data.result);
     } catch (error) {
       console.error(error);
     }

@@ -14,6 +14,8 @@ const useLogout = () => {
   };
 
   const handleLogout = async () => {
+    
+    console.log(localStorage.getItem("loginInfo"))
     const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
 
     if (loginInfo) {

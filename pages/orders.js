@@ -48,7 +48,7 @@ const OrderList = () => {
           Authorization: `Bearer ${loginInfo.accessToken}`,
         },
       });
-      setOrders(response.data);
+      setOrders(response.data.result);
     } catch (error) {
       console.error(error);
     }

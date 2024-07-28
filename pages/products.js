@@ -44,6 +44,8 @@ const ProductList = ({
   const [imagesLoaded, setImagesLoaded] = React.useState(false); // 추가된 코드
 
   React.useEffect(() => {
+    console.log("aa")
+
     const loadImages = async () => {
       await Promise.all(
         products.map(
@@ -72,7 +74,7 @@ const ProductList = ({
 
 
   const getCart = async () => {
-
+    console.log('aa')
     const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
 
     try {
@@ -84,10 +86,9 @@ const ProductList = ({
           },
         }
       );
-      console.log(response.data.id)
-      setCartId(response.data.id)
+      console.log(response.data.result.id)
+      setCartId(response.data.result.id)
       if (response.status === 200) {
-        router.push("/");
       }
     } catch (error) {
       console.error(error);
@@ -268,7 +269,7 @@ export async function getServerSideProps(context) {
 
   try {
     const categoryResponse = await myAxios.get("/categories");
-    categories = categoryResponse.data;
+    categories = categoryResponse.data.result;
 
     const productResponse = await myAxios.get("/products", {
       params: {
@@ -276,9 +277,9 @@ export async function getServerSideProps(context) {
         page,
       },
     });
-    products = productResponse.data.content;
-    pageNumber = parseInt(productResponse.data.pageable.pageNumber);
-    totalPages = parseInt(productResponse.data.totalPages);
+    products = productResponse.data.result.content;
+    pageNumber = parseInt(productResponse.data.result.pageable.pageNumber);
+    totalPages = parseInt(productResponse.data.result.totalPages);
   } catch (error) {
     console.error(error);
   }

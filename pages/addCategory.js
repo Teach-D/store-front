@@ -34,7 +34,7 @@ const addProducts = () => {
   const [name, setName] = useState("");
   const handleLogin = async (event) => {
     event.preventDefault();
-
+    console.log(name)
     try {
       const response = await axios.post("http://localhost:8080/categories", {
         name
