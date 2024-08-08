@@ -25,7 +25,7 @@ const EditProduct = () => {
 
         try {
           const response = await axios.get(`http://localhost:8080/products/${id}`);
-          console.log(response.data.result)
+          console.log(response.data.result.product)
           const product = response.data.result.product;
           setTitle(product.title);
           setPrice(product.price);

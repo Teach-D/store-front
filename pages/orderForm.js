@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/router";
 
 import {
@@ -21,7 +20,7 @@ const MyPage = () => {
   const router = useRouter();
 
   const [userInfo, setUserInfo] = useState(null);
-  const [deliveryInfo, setDeliveryInfo] = useState("");
+  const [deliveryInfo, setDeliveryInfo] = useState(null);
   const [cartItems, setCartItems] = useState([]);
   const [discounts, setDiscounts] = useState([]);
   const [selectedDiscount, setSelectedDiscount] = useState("");
@@ -97,11 +96,15 @@ const MyPage = () => {
       console.error("Access token not found");
       return;
     }
-    console.log(selectedDiscount)
+
     try {
+      const url = selectedDiscount
+        ? `http://localhost:8080/orders/${selectedDiscount}`
+        : "http://localhost:8080/orders";
+
       const response = await axios.post(
-        `http://localhost:8080/orders/${selectedDiscount}`,
-        { discountId: selectedDiscount },
+        url,
+        selectedDiscount ? { discountId: selectedDiscount } : {},
         {
           headers: {
             Authorization: `Bearer ${loginInfo.accessToken}`,
@@ -140,10 +143,10 @@ const MyPage = () => {
 
       <Box sx={{ textAlign: "center" }}>
         <h2>배송정보</h2>
-        <Typography variant="h5">받으시는 분: {deliveryInfo.recipient}</Typography>
-        <Typography variant="h5">주소: {deliveryInfo.address}</Typography>
-        <Typography variant="h5">전화번호: {deliveryInfo.phoneNumber}</Typography>
-        <Typography variant="h5">요청사항: {deliveryInfo.request}</Typography>
+        <Typography variant="h5">받으시는 분: {deliveryInfo ? deliveryInfo.recipient : ""}</Typography>
+        <Typography variant="h5">주소: {deliveryInfo ? deliveryInfo.address : ""}</Typography>
+        <Typography variant="h5">전화번호: {deliveryInfo ? deliveryInfo.phoneNumber : ""}</Typography>
+        <Typography variant="h5">요청사항: {deliveryInfo ? deliveryInfo.request : ""}</Typography>
       </Box>
 
       {cartItems.length > 0 ? (

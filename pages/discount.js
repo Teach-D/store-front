@@ -87,36 +87,36 @@ const OrderList = () => {
     }
   };
 
-  // const deleteOrder = async (id) => {
+  const deleteDiscount = async (id) => {
 
-  //   const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
+    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
 
-  //   if (!loginInfo || !loginInfo.accessToken) {
-  //     console.error("Access token not found");
+    if (!loginInfo || !loginInfo.accessToken) {
+      console.error("Access token not found");
 
-  //     return;
-  //   }
+      return;
+    }
 
-  //   try {
-  //     const response = await axios.delete(
-  //       `http://localhost:8080/orders/${id}`,
-  //       {
-  //         headers: {
-  //           Authorization: `Bearer ${loginInfo.accessToken}`,
-  //         },
-  //       }
-  //     );
+    try {
+      const response = await axios.delete(
+        `http://localhost:8080/discount/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${loginInfo.accessToken}`,
+          },
+        }
+      );
 
-  //     if (response.status === 200) {
-  //       router.push("/");
-  //     }
-  //   } catch (error) {
-  //     console.error(error);
+      if (response.status === 200) {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error(error);
       
 
-  //   } finally {
-  //   }
-  // };
+    } finally {
+    }
+  };
 
   return (
     <Container className={classes.container}>
@@ -156,11 +156,11 @@ const OrderList = () => {
                     </Button>
                   </Link> 
                   <button onClick={() => setMember(discount.id)}>
-                     {discount.id} 내 할인 목록애 추가하기
+                     {discount.id} 내 할인 목록에 추가하기
                   </button>
-                  {/* <button onClick={() => deleteOrder(order.id)}>
-                     {order.id}
-                  </button> */}
+                  <button onClick={() => deleteDiscount(discount.id)}>
+                     {discount.id} 할인 삭제하기
+                  </button>
                 </CardContent>
               </Card>
             </Grid>
