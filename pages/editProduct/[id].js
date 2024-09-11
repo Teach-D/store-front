@@ -45,12 +45,15 @@ const EditProduct = () => {
         try {
           const response = await axios.get(`http://localhost:8080/products/${id}`);
           const product = response.data.result.product;
+          console.log(response.data.result.categoryId)
           setTitle(product.title);
           setPrice(product.price);
           setDescription(product.description);
-          setCategoryId(product.category.id);
+          setCategoryId(response.data.result.categoryId);
           setImageUrl(product.imageUrl);
           setQuantity(product.quantity);
+
+          console.log(imageUrl)
         } catch (error) {
           console.error(error);
           setError("Failed to fetch product data.");

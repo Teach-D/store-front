@@ -6,21 +6,22 @@ import {
   CardMedia,
   CardContent,
   Typography,
-  CardActions,
   Button,
   Box,
+  MenuItem,
+  Select,
 } from "@mui/material";
 import { makeStyles } from "@mui/styles";
-import Link from "next/link"; // 추가된 코드
+import Link from "next/link";
 import myAxios from "../utils/myaxios";
 import axios from "axios";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    marginTop: 3
+    marginTop: 3,
   },
   productCard: {
-    marginBottom: 3
+    marginBottom: 3,
   },
   media: {
     height: 0,
@@ -31,21 +32,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+const all = 0
+
 const ProductList = ({
   categories,
   products,
   pageNumber,
   totalPages,
   categoryId,
+  currentSort, // Current sort parameter
+  currentOrder, // Current order parameter
 }) => {
-  // 수정된 코드
   const classes = useStyles();
 
-  const [imagesLoaded, setImagesLoaded] = React.useState(false); // 추가된 코드
+  const [imagesLoaded, setImagesLoaded] = React.useState(false);
+  const [sort, setSort] = useState(currentSort || "sale"); // Sort state
+  const [order, setOrder] = useState(currentOrder || "asc"); // Order state
 
   React.useEffect(() => {
-    console.log("aa")
-
     const loadImages = async () => {
       await Promise.all(
         products.map(
@@ -60,56 +64,25 @@ const ProductList = ({
       );
       setImagesLoaded(true);
     };
-
     loadImages();
   }, [products]);
 
-  const [cartId, setCartId] = useState("");
-  const [quantity, setQuantity] = useState("1");
-
-  const handleQuantityChange = (quantity) => {
-    setQuantity(quantity)
-  }
-  
-
-
-  const getCart = async () => {
-    console.log('aa')
-    const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
-
-    try {
-      const response = await axios.get(
-        "http://localhost:8080/products",
-        {
-          headers: {
-            Authorization: `Bearer ${loginInfo.accessToken}`,
-          },
-        }
-      );
-      console.log(response.data.result.id)
-      setCartId(response.data.result.id)
-      if (response.status === 200) {
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-    }
+  const handleSortChange = (event) => {
+    setSort(event.target.value);
   };
 
-  useEffect(() => {
-    getCart();
-  });
-
+  const handleOrderChange = (event) => {
+    setOrder(event.target.value);
+  };
 
   const handleAddToCart = async (productId) => {
     const loginInfo = JSON.parse(localStorage.getItem("loginInfo"));
-
     try {
       const response = await axios.post(
         `http://localhost:8080/cartItems/${productId}`,
         {
-          cartId : cartId,
-          quantity: quantity,
+          cartId,
+          quantity,
         },
         {
           headers: {
@@ -126,20 +99,14 @@ const ProductList = ({
     }
   };
 
-  const goProduct = () => {
-    console.log("aa")
-  }
-
-  const emptyCardCount = 4 - (products.length % 4);
-
   return (
     <Container className={classes.container}>
       <Grid container spacing={3}>
-        <Grid item>
-          <Link href={`/products`} passHref>
-            <Button>모두</Button>
-          </Link>
-        </Grid>
+      <Grid item>
+        <Link href={`/products?sort=0&order=0`} passHref>
+          <Button>모두</Button>
+        </Link>
+      </Grid>
         {categories.map((category) => (
           <Grid item key={category.id}>
             <Link href={`/products?categoryId=${category.id}`} passHref>
@@ -149,19 +116,27 @@ const ProductList = ({
         ))}
       </Grid>
 
-          <Link href={`/addProducts`} passHref>
-            <Button>상품추가</Button>
-          </Link>
-          <Link href={`/addCategory`} passHref>
-            <Button>카테고리추가</Button>
-          </Link>
+      <Box display="flex" justifyContent="center" marginY={3}>
+        <Select value={sort} onChange={handleSortChange}>
+          <MenuItem value="sale">Sale</MenuItem>
+          <MenuItem value="price">Price</MenuItem>
+        </Select>
+        <Select value={order} onChange={handleOrderChange}>
+          <MenuItem value="asc">Ascending</MenuItem>
+          <MenuItem value="desc">Descending</MenuItem>
+        </Select>
+        <Link
+          href={`/products?categoryId=${categoryId}&sort=${sort}&order=${order}`}
+          passHref
+        >
+          <Button>Sort</Button>
+        </Link>
+      </Box>
 
       <Grid container spacing={3} className={classes.gridContainer}>
         {products.length > 0 ? (
           products.map((product, index) => (
             <Grid item xs={12} sm={12} md={4} lg={4} key={index}>
-              {" "}
-              {/* 한 줄에 최대 3개 표시 */}
               <Card className={classes.productCard}>
                 <CardMedia
                   className={classes.media}
@@ -182,7 +157,6 @@ const ProductList = ({
                 <Link href={`/product/${product.id}`} passHref>
                   <Button>자세히 보기</Button>
                 </Link>
-      
               </Card>
             </Grid>
           ))
@@ -206,9 +180,8 @@ const ProductList = ({
       </Grid>
 
       <Box display="flex" justifyContent="center" marginBottom={3}>
-        {/* 페이지 네비게이터 버튼 */}
         <Link
-          href={`/products?page=0${
+          href={`/products?page=0&sort=${sort}&order=${order}${
             categoryId ? `&categoryId=${categoryId}` : ""
           }`}
           passHref
@@ -216,7 +189,7 @@ const ProductList = ({
           <Button variant="outlined">첫페이지</Button>
         </Link>
         <Link
-          href={`/products?page=${Math.max(0, pageNumber - 1)}${
+          href={`/products?page=${Math.max(0, pageNumber - 1)}&sort=${sort}&order=${order}${
             categoryId ? `&categoryId=${categoryId}` : ""
           }`}
           passHref
@@ -225,7 +198,7 @@ const ProductList = ({
         </Link>
         {Array.from({ length: totalPages }, (_, i) => (
           <Link
-            href={`/products?page=${i}${
+            href={`/products?page=${i}&sort=${sort}&order=${order}${
               categoryId ? `&categoryId=${categoryId}` : ""
             }`}
             passHref
@@ -237,7 +210,7 @@ const ProductList = ({
           </Link>
         ))}
         <Link
-          href={`/products?page=${Math.min(totalPages - 1, pageNumber + 1)}${
+          href={`/products?page=${Math.min(totalPages - 1, pageNumber + 1)}&sort=${sort}&order=${order}${
             categoryId ? `&categoryId=${categoryId}` : ""
           }`}
           passHref
@@ -245,7 +218,7 @@ const ProductList = ({
           <Button variant="outlined">다음</Button>
         </Link>
         <Link
-          href={`/products?page=${totalPages - 1}${
+          href={`/products?page=${totalPages - 1}&sort=${sort}&order=${order}${
             categoryId ? `&categoryId=${categoryId}` : ""
           }`}
           passHref
@@ -257,10 +230,11 @@ const ProductList = ({
   );
 };
 
-// 추가된 코드
 export async function getServerSideProps(context) {
   const categoryId = context.query.categoryId || 0;
   const page = context.query.page || 0;
+  const sort = context.query.sort || 0;  // Default sort to 0
+  const order = context.query.order || 0; // Default order to 0
 
   let categories = [];
   let products = [];
@@ -271,12 +245,16 @@ export async function getServerSideProps(context) {
     const categoryResponse = await myAxios.get("/categories");
     categories = categoryResponse.data.result;
 
+    // Check if categoryId is 0 (all products), apply sorting and ordering accordingly
     const productResponse = await myAxios.get("/products", {
       params: {
-        categoryId,
+        categoryId,  // categoryId=0도 포함하여 정렬
         page,
+        sort,
+        order,
       },
     });
+
     products = productResponse.data.result.content;
     pageNumber = parseInt(productResponse.data.result.pageable.pageNumber);
     totalPages = parseInt(productResponse.data.result.totalPages);
@@ -291,8 +269,11 @@ export async function getServerSideProps(context) {
       pageNumber,
       totalPages,
       categoryId,
+      currentSort: sort,
+      currentOrder: order,
     },
   };
 }
+
 
 export default ProductList;
