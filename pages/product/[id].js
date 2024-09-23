@@ -199,7 +199,11 @@ const EditProduct = () => {
         </div>
       </div>
       <div className={styles.buttons}>
-        <button className={styles.cartButton} onClick={() => handleAddToCart(id)} disabled={loading}>
+        <button
+          className={styles.cartButton}
+          onClick={() => handleAddToCart(id)}
+          disabled={loading || quantity === 0}  // Disable button if loading or quantity is 0
+        >
           {loading ? "Adding..." : "Add to Cart"}
         </button>
       </div>

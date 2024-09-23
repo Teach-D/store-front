@@ -50,6 +50,7 @@ const ProductList = ({
   const [order, setOrder] = useState(currentOrder || "asc"); // Order state
 
   React.useEffect(() => {
+    console.log("a1")
     const loadImages = async () => {
       await Promise.all(
         products.map(
@@ -64,6 +65,7 @@ const ProductList = ({
       );
       setImagesLoaded(true);
     };
+    console.log(products)
     loadImages();
   }, [products]);
 
@@ -140,21 +142,21 @@ const ProductList = ({
               <Card className={classes.productCard}>
                 <CardMedia
                   className={classes.media}
-                  image={product.imageUrl}
-                  title={product.title}
+                  image={product.product.imageUrl}
+                  title={product.product.title}
                 />
                 <CardContent>
                   <Typography gutterBottom variant="h5" component="div">
-                    {product.title}
+                    {product.product.title}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {product.price}원
+                    {product.product.price}원
                   </Typography>
                 </CardContent>
-                <Link href={`/editProduct/${product.id}`} passHref>
+                <Link href={`/editProduct/${product.product.id}`} passHref>
                   <Button>수정</Button>
                 </Link>
-                <Link href={`/product/${product.id}`} passHref>
+                <Link href={`/product/${product.product.id}`} passHref>
                   <Button>자세히 보기</Button>
                 </Link>
               </Card>
@@ -231,6 +233,7 @@ const ProductList = ({
 };
 
 export async function getServerSideProps(context) {
+  console.log("aa")
   const categoryId = context.query.categoryId || 0;
   const page = context.query.page || 0;
   const sort = context.query.sort || 0;  // Default sort to 0
@@ -240,7 +243,7 @@ export async function getServerSideProps(context) {
   let products = [];
   let pageNumber = 0;
   let totalPages = 0;
-
+  console.log("aa")
   try {
     const categoryResponse = await myAxios.get("/categories");
     categories = categoryResponse.data.result;
@@ -254,7 +257,7 @@ export async function getServerSideProps(context) {
         order,
       },
     });
-
+    console.log(productResponse)
     products = productResponse.data.result.content;
     pageNumber = parseInt(productResponse.data.result.pageable.pageNumber);
     totalPages = parseInt(productResponse.data.result.totalPages);
